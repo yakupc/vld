@@ -10,9 +10,9 @@
 #include <gtest/gtest.h>
 
 #ifdef _WIN64
-static const TCHAR* sVld_dll = _T("vld_x64.dll");
+static const TCHAR* sVld_dll = _T("visualleakdetector_x64.dll");
 #else
-static const TCHAR* sVld_dll = _T("vld_x86.dll");
+static const TCHAR* sVld_dll = _T("visualleakdetector_x86.dll");
 #endif
 
 UINT VLDGetLeaksCount()

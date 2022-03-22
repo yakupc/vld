@@ -13,76 +13,81 @@
 
 // Name of the debug C Runtime Library DLL on this system
 #ifdef _DEBUG
-#if _MSC_VER == 1400	// VS 2005
-#ifdef _DLL
-#define CRTDLLNAME   _T("msvcr80d.dll")
+    #if _MSC_VER == 1400    // VS 2005
+        #ifdef _DLL
+            #define CRTDLLNAME   _T("msvcr80d.dll")
+        #else
+            #define CRTDLLNAME   _T("msvcrt.dll")
+        #endif
+    #elif _MSC_VER == 1500  // VS 2008
+        #ifdef _DLL
+            #define CRTDLLNAME   _T("msvcr90d.dll")
+        #else
+            #define CRTDLLNAME   _T("msvcrt.dll")
+        #endif
+    #elif _MSC_VER == 1600  // VS 2010
+        #define CRTDLLNAME   _T("msvcr100d.dll")
+    #elif _MSC_VER == 1700  // VS 2012
+        #define CRTDLLNAME   _T("msvcr110d.dll")
+    #elif _MSC_VER == 1800  // VS 2013
+        #define CRTDLLNAME   _T("msvcr120d.dll")
+    #elif _MSC_VER == 1900  // VS 2015
+        #define CRTDLLNAME   _T("ucrtbased.dll")
+    #elif _MSC_VER == 1916  // VS 2017 14.16 1916 (Visual Studio 2017 version 15.9)
+        #define CRTDLLNAME   _T("ucrtbased.dll")
+    #else
+        #error Unsupported compiler
+    #endif
 #else
-#define CRTDLLNAME   _T("msvcrt.dll")
-#endif
-#elif _MSC_VER == 1500	// VS 2008
-#ifdef _DLL
-#define CRTDLLNAME   _T("msvcr90d.dll")
-#else
-#define CRTDLLNAME   _T("msvcrt.dll")
-#endif
-#elif _MSC_VER == 1600	// VS 2010
-#define CRTDLLNAME   _T("msvcr100d.dll")
-#elif _MSC_VER == 1700	// VS 2012
-#define CRTDLLNAME   _T("msvcr110d.dll")
-#elif _MSC_VER == 1800	// VS 2013
-#define CRTDLLNAME   _T("msvcr120d.dll")
-#elif _MSC_VER == 1900	// VS 2015
-#define CRTDLLNAME   _T("ucrtbased.dll")
-#else
-#error Unsupported compiler
-#endif
-#else
-#if _MSC_VER == 1400	// VS 2005
-#ifdef _DLL
-#define CRTDLLNAME   _T("msvcr80.dll")
-#else
-#define CRTDLLNAME   _T("msvcrt.dll")
-#endif
-#elif _MSC_VER == 1500	// VS 2008
-#ifdef _DLL
-#define CRTDLLNAME   _T("msvcr90.dll")
-#else
-#define CRTDLLNAME   _T("msvcrt.dll")
-#endif
-#elif _MSC_VER == 1600	// VS 2010
-#define CRTDLLNAME   _T("msvcr100.dll")
-#elif _MSC_VER == 1700	// VS 2012
-#define CRTDLLNAME   _T("msvcr110.dll")
-#elif _MSC_VER == 1800	// VS 2013
-#define CRTDLLNAME   _T("msvcr120.dll")
-#elif _MSC_VER == 1900	// VS 2015
-#define CRTDLLNAME   _T("ucrtbase.dll")
-#else
-#error Unsupported compiler
-#endif
+    #if _MSC_VER == 1400    // VS 2005
+        #ifdef _DLL
+            #define CRTDLLNAME   _T("msvcr80.dll")
+        #else
+            #define CRTDLLNAME   _T("msvcrt.dll")
+        #endif
+    #elif _MSC_VER == 1500  // VS 2008
+        #ifdef _DLL
+            #define CRTDLLNAME   _T("msvcr90.dll")
+        #else
+            #define CRTDLLNAME   _T("msvcrt.dll")
+        #endif
+    #elif _MSC_VER == 1600  // VS 2010
+        #define CRTDLLNAME   _T("msvcr100.dll")
+    #elif _MSC_VER == 1700  // VS 2012
+        #define CRTDLLNAME   _T("msvcr110.dll")
+    #elif _MSC_VER == 1800  // VS 2013
+        #define CRTDLLNAME   _T("msvcr120.dll")
+    #elif _MSC_VER == 1900  // VS 2015
+        #define CRTDLLNAME   _T("ucrtbase.dll")
+    #elif _MSC_VER == 1916  // VS 2017 14.16 1916 (Visual Studio 2017 version 15.9)
+        #define CRTDLLNAME   _T("ucrtbase.dll")
+    #else
+        #error Unsupported compiler
+    #endif
 #endif
 
 // Vld shouldn't report this leak because we enable Vld after executing DllMain
-class MemoryLeak {
+class MemoryLeak
+{
 public:
     MemoryLeak() { l = malloc(7); memset(l, 0x30 + ((int)7 / 10), 7); }
     ~MemoryLeak() { free(l); }
 private:
-    void* l;
+    void *l;
 };
 
-static MemoryLeak ml; 
+static MemoryLeak ml;
 
-typedef void* (__cdecl *free_t) (void* mem);
-typedef void* (__cdecl *malloc_t) (size_t size);
+typedef void *(__cdecl *free_t) (void *mem);
+typedef void *(__cdecl *malloc_t) (size_t size);
 typedef void (*allocFunc_t) (bool bFree);
 
 static const int recursion = 3;
 
-::testing::AssertionResult AssertCompareCallStacks(const char* actual_expr,
-    const char* expected_expr,
-    const wchar_t* actual,
-    const char* expected)
+::testing::AssertionResult AssertCompareCallStacks(const char *actual_expr,
+                                                   const char *expected_expr,
+                                                   const wchar_t *actual,
+                                                   const char *expected)
 {
     using namespace ::testing::internal;
     bool succeded = true;
@@ -96,7 +101,7 @@ static const int recursion = 3;
         if (!std::getline(actualStream, wactualLine))
         {
             return ::testing::AssertionFailure()
-                << resultStream.str() << actual_expr << " contain less lines than " << expected_expr << "";
+                   << resultStream.str() << actual_expr << " contain less lines than " << expected_expr << "";
         }
         std::string actualLine(wactualLine.begin(), wactualLine.end());
         std::transform(actualLine.begin(), actualLine.end(), actualLine.begin(), ::tolower);
@@ -106,22 +111,22 @@ static const int recursion = 3;
             {
                 succeded = false;
                 resultStream
-                    << actual_expr << " and " << expected_expr << " lines are not match\n";
+                        << actual_expr << " and " << expected_expr << " lines are not match\n";
             }
             resultStream
-                << "line:\n" << actualLine << "\n and \n" << expectedLine << "\n";
+                    << "line:\n" << actualLine << "\n and \n" << expectedLine << "\n";
         }
     }
     return succeded ? ::testing::AssertionSuccess() : (::testing::AssertionSuccess() << resultStream.str());
 }
 
 #ifdef _WIN64
-static const TCHAR* sVld_dll = _T("vld_x64.dll");
+    static const TCHAR *sVld_dll = _T("visualleakdetector_x64.dll");
 #else
-static const TCHAR* sVld_dll = _T("vld_x86.dll");
+    static const TCHAR *sVld_dll = _T("visualleakdetector_x86.dll");
 #endif
 
-typedef const wchar_t*(*VldGetCallstack_func)(void* alloc, BOOL showInternalFrames);
+typedef const wchar_t *(*VldGetCallstack_func)(void *alloc, BOOL showInternalFrames);
 static VldGetCallstack_func VldInternalGetAllocationCallstack = NULL;
 
 void GetVldFunctions()
@@ -134,7 +139,7 @@ void GetVldFunctions()
         if (vld_module != NULL)
         {
             VldInternalGetAllocationCallstack = (VldGetCallstack_func)GetProcAddress(vld_module,
-                "VldInternalGetAllocationCallstack");
+                                                                                     "VldInternalGetAllocationCallstack");
             assert(VldInternalGetAllocationCallstack);
         }
     }
@@ -143,49 +148,49 @@ void GetVldFunctions()
 __declspec(noinline) void allocMalloc(bool bFree)
 {
     GetVldFunctions();
-    int* leaked_memory = (int*)malloc(78);
-    const wchar_t* callstack = VldInternalGetAllocationCallstack(leaked_memory, false);
+    int *leaked_memory = (int *)malloc(78);
+    const wchar_t *callstack = VldInternalGetAllocationCallstack(leaked_memory, false);
     if (callstack != NULL)
     {
-        const char* expectedCallstack =
-#ifdef _DLL
+        const char *expectedCallstack =
+            #ifdef _DLL
 //#ifdef _DEBUG
 //            "\\s+\\S+.cpp \\(\\d+\\): \\w+\\.dll!malloc\\(\\)\n"
 //#else
             "\\s+\\w+\\.dll!malloc\\(\\)\n"
 //#endif
-#else
+            #else
             "\\s+ntdll\\.dll!rtlallocateheap\\(\\)\n"
-#ifdef _DEBUG
+            #ifdef _DEBUG
             "\\s+\\S+\\\\heap\\\\malloc\\.cpp \\(\\d+\\): \\w+\\.\\w+!malloc\\(\\) \\+ 0x\\S+ bytes\n"
-#else
+            #else
             "\\s+\\S+\\\\heap\\\\malloc_base\\.cpp \\(\\d+\\): \\w+\\.\\w+!_malloc_base\\(\\)\n"
-#endif
-#endif
+            #endif
+            #endif
             "\\s+\\S+\\\\allocs\\.cpp \\(\\d+\\): \\w+\\.\\w+!allocmalloc\\(\\).*\n"
             "\\s+\\S+\\\\allocs\\.cpp \\(\\d+\\): \\w+\\.\\w+!allocator<0>::alloc\\(\\) \\+ 0x\\S+ bytes";
         EXPECT_PRED_FORMAT2(AssertCompareCallStacks, callstack, expectedCallstack);
     }
-    int* leaked_memory_dbg = (int*)_malloc_dbg(80, _NORMAL_BLOCK, __FILE__, __LINE__);
+    int *leaked_memory_dbg = (int *)_malloc_dbg(80, _NORMAL_BLOCK, __FILE__, __LINE__);
     callstack = VldInternalGetAllocationCallstack(leaked_memory_dbg, false);
     if (callstack != NULL)
     {
-        const char* expectedCallstack =
-#ifdef _DLL
-#ifdef _DEBUG
+        const char *expectedCallstack =
+            #ifdef _DLL
+            #ifdef _DEBUG
             "\\s+\\w+\\.dll!_?malloc_dbg\\(\\)\n"
 //            "\\s+\\S+.cpp \\(\\d+\\): \\w+\\.dll!_?malloc_dbg\\(\\)\n"
-#else
+            #else
             "\\s+\\w+\\.dll!malloc\\(\\)\n"
-#endif
-#else
+            #endif
+            #else
             "\\s+ntdll\\.dll!rtlallocateheap\\(\\)\n"
-#ifdef _DEBUG
+            #ifdef _DEBUG
             "\\s+\\S+\\\\heap\\\\debug_heap\\.cpp \\(\\d+\\): \\w+\\.\\w+!_malloc_dbg\\(\\) \\+ 0x\\S+ bytes\n"
-#else
+            #else
             "\\s+\\S+\\\\heap\\\\malloc_base\\.cpp \\(\\d+\\): \\w+\\.\\w+!_malloc_base\\(\\)\n"
-#endif
-#endif
+            #endif
+            #endif
             "\\s+\\S+\\\\allocs\\.cpp \\(\\d+\\): \\w+\\.\\w+!allocmalloc\\(\\).*\n"
             "\\s+\\S+\\\\allocs\\.cpp \\(\\d+\\): \\w+\\.\\w+!allocator<0>::alloc\\(\\) \\+ 0x\\S+ bytes";
         EXPECT_PRED_FORMAT2(AssertCompareCallStacks, callstack, expectedCallstack);
@@ -199,8 +204,8 @@ __declspec(noinline) void allocMalloc(bool bFree)
 
 void allocNew(bool bFree)
 {
-    int* leaked_memory = (int*)malloc(78);
-    int* leaked_memory_dbg = (int*)_malloc_dbg(80, _NORMAL_BLOCK, __FILE__, __LINE__);
+    int *leaked_memory = (int *)malloc(78);
+    int *leaked_memory_dbg = (int *)_malloc_dbg(80, _NORMAL_BLOCK, __FILE__, __LINE__);
     if (bFree)
     {
         free(leaked_memory);
@@ -210,13 +215,13 @@ void allocNew(bool bFree)
 
 void allocNewArray(bool bFree)
 {
-    int* leaked_memory = new int[3];
-    int* leaked_memory_dbg = new (_NORMAL_BLOCK, __FILE__, __LINE__) int[4];
+    int *leaked_memory = new int[3];
+    int *leaked_memory_dbg = new (_NORMAL_BLOCK, __FILE__, __LINE__) int[4];
 
     // placement new operator
     int temp[3];
-    void* place = temp;
-    float* placed_mem = new (place) float[3]; // doesn't work. Nothing gets patched by vld
+    void *place = temp;
+    float *placed_mem = new (place) float[3]; // doesn't work. Nothing gets patched by vld
     if (bFree)
     {
         delete[] leaked_memory;
@@ -226,8 +231,8 @@ void allocNewArray(bool bFree)
 
 void allocCalloc(bool bFree)
 {
-    int* leaked_memory = (int*)calloc(47, sizeof(int));
-    int* leaked_memory_dbg = (int*)_calloc_dbg(39, sizeof(int), _NORMAL_BLOCK, __FILE__, __LINE__);
+    int *leaked_memory = (int *)calloc(47, sizeof(int));
+    int *leaked_memory_dbg = (int *)_calloc_dbg(39, sizeof(int), _NORMAL_BLOCK, __FILE__, __LINE__);
     if (bFree)
     {
         free(leaked_memory);
@@ -237,11 +242,11 @@ void allocCalloc(bool bFree)
 
 void allocRealloc(bool bFree)
 {
-    int* temp = (int*)malloc(17);
-    int* old_leaked_memory = (int*)realloc(temp, 23);
-    int* leaked_memory = (int*)_recalloc(old_leaked_memory, 1, 31);
-    int* old_leaked_memory_dbg = (int*)malloc(9);
-    int* leaked_memory_dbg = (int*)_realloc_dbg(old_leaked_memory_dbg, 21, _NORMAL_BLOCK, __FILE__, __LINE__);
+    int *temp = (int *)malloc(17);
+    int *old_leaked_memory = (int *)realloc(temp, 23);
+    int *leaked_memory = (int *)_recalloc(old_leaked_memory, 1, 31);
+    int *old_leaked_memory_dbg = (int *)malloc(9);
+    int *leaked_memory_dbg = (int *)_realloc_dbg(old_leaked_memory_dbg, 21, _NORMAL_BLOCK, __FILE__, __LINE__);
     if (bFree)
     {
         free(leaked_memory);
@@ -251,13 +256,13 @@ void allocRealloc(bool bFree)
 
 void allocCoTaskMem(bool bFree)
 {
-    void* leaked = CoTaskMemAlloc(7);
+    void *leaked = CoTaskMemAlloc(7);
     if (bFree)
     {
         CoTaskMemFree(leaked);
     }
-    void* leaked2 = CoTaskMemAlloc(7);
-    void* realloced = CoTaskMemRealloc(leaked2, 29);
+    void *leaked2 = CoTaskMemAlloc(7);
+    void *realloced = CoTaskMemRealloc(leaked2, 29);
     if (bFree)
     {
         CoTaskMemFree(realloced);
@@ -266,9 +271,9 @@ void allocCoTaskMem(bool bFree)
 
 void allocAlignedMalloc(bool bFree)
 {
-    void* leaked = _aligned_offset_malloc(64, 16, 1);
-    int* leaked_memory = (int*)_aligned_malloc(64, 16);
-    int* leaked_memory_dbg = (int*)_aligned_malloc_dbg(32, 16, __FILE__, __LINE__);
+    void *leaked = _aligned_offset_malloc(64, 16, 1);
+    int *leaked_memory = (int *)_aligned_malloc(64, 16);
+    int *leaked_memory_dbg = (int *)_aligned_malloc_dbg(32, 16, __FILE__, __LINE__);
     if (bFree)
     {
         _aligned_free(leaked);
@@ -279,15 +284,15 @@ void allocAlignedMalloc(bool bFree)
 
 void allocAlignedRealloc(bool bFree)
 {
-    void* leaked = _aligned_offset_malloc(64, 16, 1);
-    int* leaked_memory = (int*)_aligned_malloc(64, 16);
-    int* leaked_memory_dbg = (int*)_aligned_malloc_dbg(32, 16, __FILE__, __LINE__);
-    leaked = (int*)_aligned_offset_realloc(leaked, 48, 16, 2);
-    leaked_memory = (int*)_aligned_realloc(leaked_memory, 128, 16);
-    leaked_memory_dbg = (int*)_aligned_realloc_dbg(leaked_memory_dbg, 48, 16, __FILE__, __LINE__);
-    leaked = (int*)_aligned_offset_recalloc(leaked, 1, 52, 16, 2);
-    leaked_memory = (int*)_aligned_recalloc(leaked_memory, 1, 132, 16);
-    leaked_memory_dbg = (int*)_aligned_recalloc_dbg(leaked_memory_dbg, 1, 64, 16, __FILE__, __LINE__);
+    void *leaked = _aligned_offset_malloc(64, 16, 1);
+    int *leaked_memory = (int *)_aligned_malloc(64, 16);
+    int *leaked_memory_dbg = (int *)_aligned_malloc_dbg(32, 16, __FILE__, __LINE__);
+    leaked = (int *)_aligned_offset_realloc(leaked, 48, 16, 2);
+    leaked_memory = (int *)_aligned_realloc(leaked_memory, 128, 16);
+    leaked_memory_dbg = (int *)_aligned_realloc_dbg(leaked_memory_dbg, 48, 16, __FILE__, __LINE__);
+    leaked = (int *)_aligned_offset_recalloc(leaked, 1, 52, 16, 2);
+    leaked_memory = (int *)_aligned_recalloc(leaked_memory, 1, 132, 16);
+    leaked_memory_dbg = (int *)_aligned_recalloc_dbg(leaked_memory_dbg, 1, 64, 16, __FILE__, __LINE__);
     if (bFree)
     {
         _aligned_free(leaked);
@@ -298,10 +303,10 @@ void allocAlignedRealloc(bool bFree)
 
 void allocStrdup(bool bFree)
 {
-    int* leaked_memory = (int*)_strdup("_strdup() leaks!");
-    int* leaked_memory_dbg = (int*)_strdup_dbg("_strdup_dbg() leaks!", _NORMAL_BLOCK, __FILE__, __LINE__);
-    void* leaked_wmemory = (int*)_wcsdup(L"_wcsdup() leaks!");
-    void* leaked_wmemory_dbg = (int*)_wcsdup_dbg(L"_wcsdup_dbg() leaks!", _NORMAL_BLOCK, __FILE__, __LINE__);
+    int *leaked_memory = (int *)_strdup("_strdup() leaks!");
+    int *leaked_memory_dbg = (int *)_strdup_dbg("_strdup_dbg() leaks!", _NORMAL_BLOCK, __FILE__, __LINE__);
+    void *leaked_wmemory = (int *)_wcsdup(L"_wcsdup() leaks!");
+    void *leaked_wmemory_dbg = (int *)_wcsdup_dbg(L"_wcsdup_dbg() leaks!", _NORMAL_BLOCK, __FILE__, __LINE__);
     if (bFree)
     {
         free(leaked_memory);
@@ -314,7 +319,7 @@ void allocStrdup(bool bFree)
 void allocHeapAlloc(bool bFree)
 {
     HANDLE heap = HeapCreate(0x0, 0, 0);
-    int* leaked_memory = (int*)HeapAlloc(heap, 0x0, 15);
+    int *leaked_memory = (int *)HeapAlloc(heap, 0x0, 15);
     if (bFree)
     {
         HeapFree(heap, 0, leaked_memory);
@@ -327,7 +332,7 @@ void allocIMalloc(bool bFree)
     IMalloc *imalloc = NULL;
     HRESULT hr = CoGetMalloc(1, &imalloc);
     assert(SUCCEEDED(hr));
-    int* leaked_memory = static_cast<int*>(imalloc->Alloc(34));
+    int *leaked_memory = static_cast<int *>(imalloc->Alloc(34));
     if (bFree)
     {
         imalloc->Free(leaked_memory);
@@ -342,7 +347,7 @@ void allocGetProcMalloc(bool bFree)
     assert(crt != NULL);
     pmalloc = reinterpret_cast<malloc_t>(GetProcAddress(crt, "malloc"));
     assert(pmalloc != NULL);
-    int* leaked_memory = static_cast<int*>(pmalloc(64));
+    int *leaked_memory = static_cast<int *>(pmalloc(64));
     if (bFree)
     {
         pfree = reinterpret_cast<free_t>(GetProcAddress(crt, "free"));
@@ -357,22 +362,24 @@ template<size_t i>
 struct allocator;
 
 template<>
-struct allocator<0> {
-
-__declspec(noinline) static void alloc(allocFunc_t func, bool bFree)
+struct allocator<0>
 {
-    func(bFree);
-}
+
+    __declspec(noinline) static void alloc(allocFunc_t func, bool bFree)
+    {
+        func(bFree);
+    }
 
 };
 
 template<size_t i>
-struct allocator {
-
-__declspec(noinline) static void alloc(allocFunc_t func, bool bFree)
+struct allocator
 {
-    allocator<i - 1>::alloc(func, bFree);
-}
+
+    __declspec(noinline) static void alloc(allocFunc_t func, bool bFree)
+    {
+        allocator < i - 1 >::alloc(func, bFree);
+    }
 
 };
 
