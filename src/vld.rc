@@ -70,14 +70,15 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
+            VALUE "CompanyName", "VLD"
             VALUE "FileDescription", "Visual Leak Detector DLL"
             VALUE "FileVersion", VERSION_STRING
             VALUE "InternalName", "vld"
             VALUE "LegalCopyright", VERSION_COPYRIGHT
 #ifndef WIN64
-            VALUE "OriginalFilename", "visualleakdetector_x86.dll"
+            VALUE "OriginalFilename", "visualleakdetector.dll"
 #else
-            VALUE "OriginalFilename", "visualleakdetector_x64.dll"
+            VALUE "OriginalFilename", "visualleakdetector.dll"
 #endif
             VALUE "ProductName", "Visual Leak Detector"
             VALUE "ProductVersion", VERSION_STRING

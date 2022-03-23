@@ -50,9 +50,17 @@
 #define SELFTESTTEXTW       L"Memory Leak Self-Test"
 #define VLDREGKEYPRODUCT    L"Software\\Visual Leak Detector"
 #ifndef WIN64
-#define VLDDLL				"visualleakdetector_x86.dll"
+#ifdef _DEBUG
+#define VLDDLL				"visualleakdetectord.dll"
 #else
-#define VLDDLL				"visualleakdetector_x64.dll"
+#define VLDDLL				"visualleakdetector.dll"
+#endif
+#else
+#ifdef _DEBUG
+#define VLDDLL				"visualleakdetectord.dll"
+#else
+#define VLDDLL				"visualleakdetector.dll"
+#endif
 #endif
 
 // The Visual Leak Detector APIs.

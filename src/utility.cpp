@@ -505,7 +505,7 @@ BOOL PatchImport (HMODULE importmodule, moduleentry_t *patchModule)
             IMAGE_DIRECTORY_ENTRY_IMPORT, &size, &section);
     }
 
-    if (idte == NULL) {
+    if ((idte == NULL) || (idte->OriginalFirstThunk == 0)) {
         // This module has no IDT (i.e. it imports nothing).
         return FALSE;
     }
@@ -569,7 +569,7 @@ BOOL PatchImport (HMODULE importmodule, moduleentry_t *patchModule)
                                     DbgReport(L"Hook dll \"%S\" import %S!%S()\n",
                                         strrchr(pszBuffer, '\\') + 1, patchModule->exportModuleName, importname);
                                 } else {
-                                    DbgReport(L"Hook dll \"%S\" import %S!%zu()\n",
+                                    DbgReport(L"Hook dll \"%S\" import %S!%Iu()\n",
                                         strrchr(pszBuffer, '\\') + 1, patchModule->exportModuleName, importname);
                                 }
 #endif
@@ -607,7 +607,7 @@ BOOL PatchImport (HMODULE importmodule, moduleentry_t *patchModule)
                             DbgReport(L"Hook dll \"%S\":\n",
                                 strrchr(pszBuffer, '\\') + 1);
                         }
-                        DbgReport(L"Import found %zu(\"%S\") for dll \"%S\".\n",
+                        DbgReport(L"Import found %Iu(\"%S\") for dll \"%S\".\n",
                             importname, patchModule->exportModuleName, importdllname);
                         break;
                     }
@@ -878,7 +878,7 @@ VOID RestoreImport (HMODULE importmodule, moduleentry_t* module)
                                 DbgReport(L"UnHook dll \"%S\" import %S!%S()\n",
                                     strrchr(pszBuffer, '\\') + 1, module->exportModuleName, importname);
                             } else {
-                                DbgReport(L"UnHook dll \"%S\" import %S!%zu()\n",
+                                DbgReport(L"UnHook dll \"%S\" import %S!%Iu()\n",
                                     strrchr(pszBuffer, '\\') + 1, module->exportModuleName, importname);
                             }
 #endif
