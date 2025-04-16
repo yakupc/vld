@@ -74,6 +74,8 @@ enum action_e
         #define CRTDLLNAME   _T("ucrtbased.dll")
     #elif _MSC_VER == 1916  // VS 2017 14.16 1916 (Visual Studio 2017 version 15.9)
         #define CRTDLLNAME   _T("ucrtbased.dll")
+    #elif (_MSC_VER >= 1930 && _MSC_VER <= 1943)  // Visual Studio 2022 version 17.13 
+        #define CRTDLLNAME   _T("ucrtbased.dll")
     #else
         #error Unsupported compiler
     #endif
@@ -100,6 +102,8 @@ enum action_e
         #define CRTDLLNAME   _T("ucrtbase.dll")
     #elif _MSC_VER == 1916  // VS 2017 14.16 1916 (Visual Studio 2017 version 15.9)
         #define CRTDLLNAME   _T("ucrtbase.dll")
+    #elif (_MSC_VER >= 1930 && _MSC_VER <= 1943)  // Visual Studio 2022 version 17.13 
+        #define CRTDLLNAME   _T("ucrtbased.dll")
     #else
         #error Unsupported compiler
     #endif

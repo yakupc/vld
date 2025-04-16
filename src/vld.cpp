@@ -976,7 +976,7 @@ LPWSTR VisualLeakDetector::buildSymbolSearchPath ()
         delete [] env;
     }
 
-#if _MSC_VER > 1919
+#if _MSC_VER > 1943
 #error Not supported VS
 #endif
     // Append Visual Studio 2017/2015/2013/2012/2010/2008 symbols cache directory.
